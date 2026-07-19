@@ -1,0 +1,14 @@
+# dados pessoais: perfil de voz e videos NUNCA sobem
+perfil_voz.npz
+edite_videos/
+*.mp4
+*.mov
+*.mkv
+*.wav
+*.mp3
+
+# ambiente e modelos baixados
+venv/
+modelos/
+__pycache__/
+*.pyc

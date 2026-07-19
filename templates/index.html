@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VozCut</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fundo: #070b14;
+    --painel: #0e1524;
+    --painel-2: #121b30;
+    --borda: #1e2a45;
+    --azul: #38bdf8;
+    --azul-forte: #2563eb;
+    --roxo: #8b5cf6;
+    --vermelho: #ef4444;
+    --verde: #34d399;
+    --texto: #e2e8f0;
+    --texto-2: #8fa3c0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background:
+      radial-gradient(ellipse 80% 50% at 20% -10%, rgba(139,92,246,.18), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 0%, rgba(56,189,248,.12), transparent),
+      var(--fundo);
+    color: var(--texto);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+  .caixa { max-width: 1040px; margin: 0 auto; padding: 32px 20px 60px; }
+  header { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; flex-wrap: wrap; }
+  .logo {
+    width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--azul-forte), var(--roxo));
+    display: grid; place-items: center;
+    box-shadow: 0 0 24px rgba(139,92,246,.45);
+  }
+  .logo svg { width: 28px; height: 28px; }
+  h1 {
+    font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 30px;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, var(--azul), var(--roxo));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .tagline { color: var(--texto-2); margin: 4px 0 28px; font-size: 15px; }
+  .tagline b { color: var(--azul); font-weight: 600; }
+
+  .cartoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 26px; }
+  .cartao {
+    background: linear-gradient(180deg, var(--painel-2), var(--painel));
+    border: 1px solid var(--borda); border-radius: 14px; padding: 18px;
+  }
+  .cartao .rotulo { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--texto-2); margin-bottom: 8px; }
+  .cartao .valor { font-family: 'Orbitron', sans-serif; font-size: 26px; font-weight: 700; }
+  .valor.azul { color: var(--azul); } .valor.roxo { color: var(--roxo); }
+  .valor.verde { color: var(--verde); } .valor.vermelho { color: var(--vermelho); }
+
+  .acoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 18px; }
+  button {
+    font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 1px;
+    color: #fff; border: none; border-radius: 12px; padding: 16px 18px; cursor: pointer;
+    transition: transform .12s, box-shadow .12s;
+  }
+  button:hover { transform: translateY(-2px); }
+  button:disabled { opacity: .45; cursor: wait; transform: none; }
+  .bt-cortar { background: linear-gradient(135deg, var(--azul-forte), var(--roxo)); box-shadow: 0 6px 20px rgba(37,99,235,.35); }
+  .bt-treinar { background: linear-gradient(135deg, #7c3aed, #a855f7); box-shadow: 0 6px 20px rgba(139,92,246,.35); }
+  .bt-verificar { background: linear-gradient(135deg, #b91c1c, var(--vermelho)); box-shadow: 0 6px 20px rgba(239,68,68,.3); }
+  button small { display: block; font-family: 'Inter', sans-serif; font-weight: 400; font-size: 12px; letter-spacing: 0; margin-top: 5px; opacity: .85; }
+
+  .campo { display: flex; gap: 10px; margin-bottom: 26px; flex-wrap: wrap; }
+  .campo input {
+    flex: 1; min-width: 240px; background: var(--painel); border: 1px solid var(--borda);
+    border-radius: 10px; color: var(--texto); padding: 12px 14px; font-size: 14px;
+  }
+  .campo input::placeholder { color: var(--texto-2); }
+  .campo input:focus { outline: none; border-color: var(--azul); }
+
+  h2 { font-family: 'Orbitron', sans-serif; font-size: 15px; letter-spacing: 2px; color: var(--texto-2); margin: 26px 0 12px; text-transform: uppercase; }
+  #console {
+    background: #05080f; border: 1px solid var(--borda); border-radius: 14px;
+    padding: 16px; height: 260px; overflow-y: auto;
+    font-family: Consolas, monospace; font-size: 13px; line-height: 1.7; color: #9fd8f5;
+    white-space: pre-wrap; word-break: break-all;
+  }
+  #console .ok { color: var(--verde); } #console .erro { color: var(--vermelho); }
+  .pulso { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--verde); margin-right: 8px; }
+  .ativo .pulso { background: var(--azul); animation: pulsar 1s infinite; }
+  @keyframes pulsar { 50% { opacity: .3; } }
+
+  .prontos { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+  .video {
+    background: var(--painel); border: 1px solid var(--borda); border-radius: 12px;
+    padding: 14px; display: flex; align-items: center; gap: 12px;
+  }
+  .video .icone {
+    width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(56,189,248,.25), rgba(139,92,246,.25));
+    display: grid; place-items: center; color: var(--azul); font-size: 16px;
+  }
+  .video .nome { font-size: 13px; font-weight: 500; word-break: break-all; }
+  .video .tam { font-size: 12px; color: var(--texto-2); }
+  footer { margin-top: 40px; color: var(--texto-2); font-size: 12px; text-align: center; }
+  footer a { color: var(--azul); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="caixa">
+  <header>
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+        <path d="M12 3v10"/><path d="M8 6v6"/><path d="M4 8v2"/><path d="M16 5v8"/><path d="M20 8v2"/>
+        <path d="M7 21l5-5 5 5" stroke="#fecaca"/>
+      </svg>
+    </div>
+    <div>
+      <h1>VOZCUT</h1>
+    </div>
+  </header>
+  <p class="tagline">Reconhece <b>a sua voz</b> e remove silencio, ruido e outras vozes dos seus videos. 100% local, nada sai do seu computador.</p>
+
+  <div class="cartoes">
+    <div class="cartao"><div class="rotulo">Perfil de voz</div>
+      <div class="valor {{ 'verde' if perfil.treinado else 'vermelho' }}" id="c-perfil">{{ 'Treinado' if perfil.treinado else 'Sem treino' }}</div></div>
+    <div class="cartao"><div class="rotulo">Amostras da sua voz</div>
+      <div class="valor azul" id="c-janelas">{{ perfil.janelas }}</div></div>
+    <div class="cartao"><div class="rotulo">Anti-perfil (nao e voce)</div>
+      <div class="valor roxo" id="c-negativos">{{ perfil.negativos }}</div></div>
+    <div class="cartao"><div class="rotulo">Limiar calibrado</div>
+      <div class="valor azul" id="c-limiar">{{ perfil.limiar if perfil.limiar else '-' }}</div></div>
+  </div>
+
+  <div class="acoes">
+    <button class="bt-cortar" onclick="executar('cortar')">CORTAR VIDEOS<small>remove os momentos sem a sua voz</small></button>
+    <button class="bt-treinar" onclick="executar('treinar')">TREINAR PERFIL<small>reforca com um video novo seu</small></button>
+    <button class="bt-verificar" onclick="executar('verificar')">VERIFICAR VOZ<small>mede a similaridade de um arquivo</small></button>
+  </div>
+  <div class="campo">
+    <input id="caminhos" placeholder="Opcional: cole caminhos de arquivos separados por ; (senao abre a janela de escolha)">
+  </div>
+
+  <h2 id="titulo-console"><span class="pulso"></span>Console</h2>
+  <div id="console">Pronto. Escolha uma acao acima.</div>
+
+  <h2>Videos prontos (pasta edite_videos)</h2>
+  <div class="prontos" id="prontos">
+    {% for v in prontos %}
+    <div class="video"><div class="icone">&#9658;</div>
+      <div><div class="nome">{{ v.nome }}</div><div class="tam">{{ v.mb }} MB</div></div></div>
+    {% else %}
+    <div class="tagline">Nenhum video cortado ainda.</div>
+    {% endfor %}
+  </div>
+
+  <footer>VozCut &middot; Silero VAD + SpeechBrain ECAPA-TDNN + FFmpeg &middot; codigo aberto sob licenca MIT</footer>
+</div>
+
+<script>
+const consoleEl = document.getElementById('console');
+const botoes = document.querySelectorAll('button');
+let poll = null;
+
+async function executar(acao) {
+  const brutos = document.getElementById('caminhos').value;
+  const caminhos = brutos ? brutos.split(';').map(c => c.trim()).filter(Boolean) : [];
+  const r = await fetch('/executar', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({acao, caminhos}),
+  });
+  if (!r.ok) { const e = await r.json(); consoleEl.textContent = 'Erro: ' + e.erro; return; }
+  botoes.forEach(b => b.disabled = true);
+  document.getElementById('titulo-console').classList.add('ativo');
+  poll = setInterval(atualizar, 800);
+}
+
+async function atualizar() {
+  const s = await (await fetch('/status')).json();
+  consoleEl.innerHTML = s.linhas.map(l => {
+    if (/finalizado com codigo 0|Pronto!|PASSOU|Salvo em/.test(l)) return `<span class="ok">${l}</span>`;
+    if (/FALHOU|Erro|erro|AVISO/.test(l)) return `<span class="erro">${l}</span>`;
+    return l;
+  }).join('\n');
+  consoleEl.scrollTop = consoleEl.scrollHeight;
+  document.getElementById('c-janelas').textContent = s.perfil.janelas;
+  document.getElementById('c-negativos').textContent = s.perfil.negativos;
+  document.getElementById('c-limiar').textContent = s.perfil.limiar ?? '-';
+  document.getElementById('prontos').innerHTML = s.prontos.map(v =>
+    `<div class="video"><div class="icone">&#9658;</div><div><div class="nome">${v.nome}</div><div class="tam">${v.mb} MB</div></div></div>`
+  ).join('') || '<div class="tagline">Nenhum video cortado ainda.</div>';
+  if (!s.ativo) {
+    clearInterval(poll);
+    botoes.forEach(b => b.disabled = false);
+    document.getElementById('titulo-console').classList.remove('ativo');
+  }
+}
+</script>
+</body>
+</html>
