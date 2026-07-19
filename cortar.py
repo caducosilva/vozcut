@@ -26,7 +26,7 @@ from vozcut_lib import (
     assinatura,
     PROJETO, SAMPLE_RATE,
     extrair_audio, carregar_wav, detectar_fala, embeddings_por_janela,
-    carregar_perfil, e_voz_do_dono,
+    carregar_perfil, classificar_segmento,
 )
 
 PASTA_SAIDA = PROJETO / "edite_videos"
@@ -63,14 +63,14 @@ def classificar_janelas(wav, segmentos, perfil, limiar, negativos):
     aceitas, recusadas = [], []
     for seg in segmentos:
         embs, janelas = embeddings_por_janela(wav, seg)
-        for e, (ini, fim) in zip(embs, janelas):
-            aceito, sim, _ = e_voz_do_dono(e, perfil, limiar, negativos)
+        ok, sims, _ = classificar_segmento(embs, perfil, limiar, negativos)
+        for aceito, sim, (ini, fim) in zip(ok, sims, janelas):
             alvo = aceitas if aceito else recusadas
             alvo.append((ini / SAMPLE_RATE, fim / SAMPLE_RATE, sim))
     return aceitas, recusadas
 
 
-def fundir(trechos, folga, gap_max=0.5, dur_total=None):
+def fundir(trechos, folga, gap_max=0.7, dur_total=None):
     """Aplica folga, funde trechos proximos e devolve [(ini, fim), ...]."""
     if not trechos:
         return []
@@ -178,7 +178,7 @@ def main():
     perfil, limiar, negativos = carregar_perfil()
     if "--limiar" in sys.argv:
         limiar = float(sys.argv[sys.argv.index("--limiar") + 1])
-    folga = 0.25
+    folga = 0.3
     if "--folga" in sys.argv:
         folga = float(sys.argv[sys.argv.index("--folga") + 1])
     so_relatorio = "--relatorio" in sys.argv

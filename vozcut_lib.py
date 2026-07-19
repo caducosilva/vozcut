@@ -45,9 +45,9 @@ def detectar_fala(wav: torch.Tensor):
     return get_speech_timestamps(
         wav, modelo,
         sampling_rate=SAMPLE_RATE,
-        min_speech_duration_ms=250,
+        min_speech_duration_ms=200,
         min_silence_duration_ms=300,
-        speech_pad_ms=100,
+        speech_pad_ms=150,
     )
 
 
@@ -127,3 +127,47 @@ def e_voz_do_dono(emb: np.ndarray, perfil, limiar, negativos):
     sim_n = float((negativos @ emb).max()) if negativos is not None else -1.0
     aceito = sim_p >= limiar and sim_p >= sim_n + MARGEM_NEGATIVA
     return aceito, sim_p, sim_n
+
+
+# Janela ate esta distancia abaixo do limiar ainda pode ser resgatada pelo contexto
+MARGEM_RESGATE = 0.15
+
+
+def classificar_segmento(embs, perfil, limiar, negativos):
+    """Classifica as janelas de UM segmento de fala usando o contexto do segmento.
+
+    Cortar fala do dono e muito pior que deixar passar um ruido, entao alem do
+    criterio duplo por janela ha duas formas de resgate:
+
+    1. Vizinhanca: janela "quase la" (ate MARGEM_RESGATE abaixo do limiar, e que
+       nao pareca mais com um negativo) colada numa janela aprovada e mantida.
+       Evita picotar uma frase porque um trecho pontuou um pouco abaixo.
+    2. Maioria: se >= 60% das janelas do segmento sao do dono, o segmento
+       inteiro e mantido (um segmento de fala continua raramente troca de voz).
+
+    Devolve (aceitas, sims_p, sims_n) com uma entrada por janela.
+    """
+    fortes, quase, sims_p, sims_n = [], [], [], []
+    for e in embs:
+        aceito, sim_p, sim_n = e_voz_do_dono(e, perfil, limiar, negativos)
+        fortes.append(aceito)
+        quase.append(not aceito and sim_p >= limiar - MARGEM_RESGATE and sim_p > sim_n)
+        sims_p.append(sim_p)
+        sims_n.append(sim_n)
+
+    aceitas = list(fortes)
+    if any(fortes):
+        if sum(fortes) / len(fortes) >= 0.6:
+            aceitas = [True] * len(fortes)
+        else:
+            mudou = True
+            while mudou:
+                mudou = False
+                for i, q in enumerate(quase):
+                    if q and not aceitas[i] and (
+                        (i > 0 and aceitas[i - 1]) or
+                        (i + 1 < len(aceitas) and aceitas[i + 1])
+                    ):
+                        aceitas[i] = True
+                        mudou = True
+    return aceitas, sims_p, sims_n

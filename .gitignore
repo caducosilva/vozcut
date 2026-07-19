@@ -1,4 +1,4 @@
-# dados pessoais: perfil de voz e videos NUNCA sobem
+# dados pessoais: perfil de voz, videos e legendas/transcricoes NUNCA sobem
 perfil_voz.npz
 edite_videos/
 *.mp4
@@ -6,6 +6,8 @@ edite_videos/
 *.mkv
 *.wav
 *.mp3
+*.srt
+*.vtt
 
 # ambiente e modelos baixados
 venv/

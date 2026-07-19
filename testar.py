@@ -16,7 +16,7 @@ from vozcut_lib import (
     assinatura,
     SAMPLE_RATE,
     extrair_audio, carregar_wav, detectar_fala, embeddings_por_janela,
-    carregar_perfil, e_voz_do_dono,
+    carregar_perfil, classificar_segmento,
 )
 
 
@@ -49,9 +49,9 @@ def taxa_aceitacao(arquivo, perfil, limiar, negativos):
     aceitas = total = 0
     for seg in segmentos:
         embs, _ = embeddings_por_janela(wav, seg)
-        for e in embs:
-            total += 1
-            aceitas += e_voz_do_dono(e, perfil, limiar, negativos)[0]
+        ok, _, _ = classificar_segmento(embs, perfil, limiar, negativos)
+        total += len(ok)
+        aceitas += sum(ok)
     return 100.0 * aceitas / total
 
 

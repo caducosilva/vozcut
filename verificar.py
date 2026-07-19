@@ -17,7 +17,7 @@ from vozcut_lib import (
     assinatura,
     SAMPLE_RATE,
     extrair_audio, carregar_wav, detectar_fala, embeddings_por_janela,
-    carregar_perfil, e_voz_do_dono,
+    carregar_perfil, classificar_segmento,
 )
 
 
@@ -36,8 +36,8 @@ def verificar(arquivo, perfil, limiar, negativos):
     sims = []
     for seg in segmentos:
         embs, janelas = embeddings_por_janela(wav, seg)
-        for e, (ini, fim) in zip(embs, janelas):
-            aceito, sim_p, sim_n = e_voz_do_dono(e, perfil, limiar, negativos)
+        ok, sims_p, sims_n = classificar_segmento(embs, perfil, limiar, negativos)
+        for aceito, sim_p, sim_n, (ini, fim) in zip(ok, sims_p, sims_n, janelas):
             sims.append((ini / SAMPLE_RATE, fim / SAMPLE_RATE, sim_p, sim_n, aceito))
 
     aceitas = sum(1 for s in sims if s[4])

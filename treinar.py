@@ -82,9 +82,11 @@ def main():
     perfil = embs[manter].mean(axis=0)
     perfil /= np.linalg.norm(perfil) + 1e-9
 
-    # Calibra um limiar: mediana das similaridades das proprias janelas menos folga
+    # Calibra um limiar com folga: cortar fala do dono e pior que deixar passar
+    # ruido, entao o limiar fica bem abaixo do percentil 5 das proprias janelas
+    # (janelas borderline ainda contam com o resgate por contexto no corte)
     sims = embs[manter] @ perfil
-    limiar = float(max(0.25, np.percentile(sims, 5) - 0.10))
+    limiar = float(max(0.25, np.percentile(sims, 5) - 0.18))
 
     np.savez(PERFIL_PATH, perfil=perfil, embs=embs[manter], limiar_sugerido=limiar)
     print(f"\nPerfil salvo em {PERFIL_PATH}")
