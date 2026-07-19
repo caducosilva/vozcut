@@ -14,6 +14,7 @@ from pathlib import Path
 import numpy as np
 
 from vozcut_lib import (
+    assinatura,
     SAMPLE_RATE,
     extrair_audio, carregar_wav, detectar_fala, embeddings_por_janela,
     carregar_perfil, e_voz_do_dono,
@@ -54,6 +55,7 @@ def verificar(arquivo, perfil, limiar, negativos):
 
 
 def main():
+    assinatura()
     arquivos = [a for a in sys.argv[1:] if not a.startswith("--")]
     if not arquivos:
         sys.exit(__doc__)

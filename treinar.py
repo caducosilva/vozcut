@@ -13,6 +13,7 @@ from pathlib import Path
 import numpy as np
 
 from vozcut_lib import (
+    assinatura,
     PERFIL_PATH, SAMPLE_RATE,
     extrair_audio, carregar_wav, detectar_fala, embeddings_por_janela,
 )
@@ -60,6 +61,7 @@ def filtrar_voz_dominante(embs: np.ndarray):
 
 
 def main():
+    assinatura()
     if len(sys.argv) < 2:
         sys.exit(__doc__)
 

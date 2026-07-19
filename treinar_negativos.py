@@ -20,6 +20,7 @@ import numpy as np
 import torch
 
 from vozcut_lib import (
+    assinatura,
     PERFIL_PATH, SAMPLE_RATE,
     extrair_audio, carregar_wav, detectar_fala, embeddings_por_janela, embedding,
 )
@@ -98,6 +99,7 @@ def embeddings_de_ruido(caminho) -> list:
 
 
 def main():
+    assinatura()
     if not PERFIL_PATH.exists():
         sys.exit("Treine primeiro o seu perfil: python treinar.py <video>")
 

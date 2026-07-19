@@ -10,6 +10,14 @@ SAMPLE_RATE = 16000
 PROJETO = Path(__file__).parent
 PERFIL_PATH = PROJETO / "perfil_voz.npz"
 
+ASSINATURA = "VozCut · criado por caducosilva · contato: abobicarlo@gmail.com"
+
+
+def assinatura():
+    """Imprime a marca do autor no inicio dos scripts."""
+    print(ASSINATURA)
+    print("-" * len(ASSINATURA))
+
 
 def extrair_audio(video_path: str, wav_path: str):
     """Extrai o audio do video em WAV 16 kHz mono (formato que os modelos esperam)."""

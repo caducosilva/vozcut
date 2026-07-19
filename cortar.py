@@ -23,6 +23,7 @@ from pathlib import Path
 import numpy as np
 
 from vozcut_lib import (
+    assinatura,
     PROJETO, SAMPLE_RATE,
     extrair_audio, carregar_wav, detectar_fala, embeddings_por_janela,
     carregar_perfil, e_voz_do_dono,
@@ -162,6 +163,7 @@ def processar(video, perfil, limiar, negativos, folga, so_relatorio):
 
 
 def main():
+    assinatura()
     videos = [a for a in sys.argv[1:] if not a.startswith("--")
               and sys.argv[max(0, sys.argv.index(a) - 1)] not in ("--limiar", "--folga")]
     if not videos:

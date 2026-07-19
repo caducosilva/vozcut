@@ -13,6 +13,7 @@ import tempfile
 from pathlib import Path
 
 from vozcut_lib import (
+    assinatura,
     SAMPLE_RATE,
     extrair_audio, carregar_wav, detectar_fala, embeddings_por_janela,
     carregar_perfil, e_voz_do_dono,
@@ -55,6 +56,7 @@ def taxa_aceitacao(arquivo, perfil, limiar, negativos):
 
 
 def main():
+    assinatura()
     if len(sys.argv) < 2:
         sys.exit(__doc__)
     video_dono = sys.argv[1]

@@ -92,6 +92,11 @@ O perfil de voz (`perfil_voz.npz`), os modelos baixados e os videos ficam fora
 do repositorio (veja o `.gitignore`). Compartilhe o codigo a vontade; a sua voz
 fica so com voce.
 
+## Autor
+
+Criado por **caducosilva** (Caduco). Duvidas, ideias ou parcerias:
+[abobicarlo@gmail.com](mailto:abobicarlo@gmail.com)
+
 ## Licenca
 
 [MIT](LICENSE). Os modelos usados tem licencas proprias: Silero VAD (MIT) e
