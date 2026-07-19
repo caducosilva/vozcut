@@ -11,11 +11,13 @@ PROJETO = Path(__file__).parent
 PERFIL_PATH = PROJETO / "perfil_voz.npz"
 
 ASSINATURA = "VozCut · criado por caducosilva · contato: abobicarlo@gmail.com"
+PIX_DOACOES = "doacoes via PIX (chave aleatoria): f74458dc-2a36-49bd-9250-1cef4365ebb8"
 
 
 def assinatura():
     """Imprime a marca do autor no inicio dos scripts."""
     print(ASSINATURA)
+    print(PIX_DOACOES)
     print("-" * len(ASSINATURA))
 
 

@@ -25,7 +25,7 @@ execucao. Nenhum audio ou video sai do seu computador.
 ## Instalacao
 
 ```
-git clone https://github.com/abobicaduco/vozcut.git
+git clone https://github.com/caducosilva/vozcut.git
 cd vozcut
 python -m venv venv
 venv\Scripts\pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
@@ -94,8 +94,14 @@ fica so com voce.
 
 ## Autor
 
-Criado por **caducosilva** (Caduco). Duvidas, ideias ou parcerias:
+Criado por **caducosilva**. Duvidas, ideias ou parcerias:
 [abobicarlo@gmail.com](mailto:abobicarlo@gmail.com)
+
+Gostou do projeto e quer apoiar? Doacoes via PIX (chave aleatoria):
+
+```
+f74458dc-2a36-49bd-9250-1cef4365ebb8
+```
 
 ## Licenca
 
